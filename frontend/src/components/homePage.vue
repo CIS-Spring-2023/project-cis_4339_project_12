@@ -12,7 +12,13 @@ export default {
     return {
       recentEvents: [],
       labels: [],
-      chartData: [],
+      chartData: [
+        { zipCode: '90210', count: 10 },
+        { zipCode: '90211', count: 20 },
+        { zipCode: '90212', count: 30 },
+        { zipCode: '90213', count: 15 },
+        { zipCode: '90214', count: 25 }
+      ],
       loading: false,
       error: null
     }
@@ -30,7 +36,7 @@ export default {
         this.labels = response.data.map(
           (item) => `${item.name} (${this.formattedDate(item.date)})`
         )
-        this.chartData = response.data.map((item) => item.attendees.length)
+        //this.chartData = response.data.map((item) => item.attendees.length)
       } catch (err) {
         if (err.response) {
           // client received an error response (5xx, 4xx)
@@ -105,8 +111,9 @@ export default {
             </tbody>
           </table>
           <div>
+            <!--add &&!error back-->
             <AttendanceChart
-              v-if="!loading && !error"
+              v-if="!loading"
               :label="labels"
               :chart-data="chartData"
             ></AttendanceChart>
