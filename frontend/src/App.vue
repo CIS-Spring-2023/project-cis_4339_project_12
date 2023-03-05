@@ -2,6 +2,8 @@
 import axios from 'axios'
 const apiURL = import.meta.env.VITE_ROOT_API
 
+ 
+
 export default {
   name: 'App',
   data() {
@@ -25,6 +27,17 @@ export default {
         </section>
         <nav class="mt-10">
           <ul class="flex flex-col gap-4">
+            <li>
+              <router-link to="/login">
+                <span
+                  style="position: relative; top: 6px"
+                  class="material-icons"
+                  >people</span
+                >
+                Login
+              </router-link>
+            </li>
+
             <li>
               <router-link to="/">
                 <span
