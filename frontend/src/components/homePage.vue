@@ -2,7 +2,7 @@
 import { DateTime } from 'luxon'
 import axios from 'axios'
 import AttendanceChart from './barChart.vue'
-const apiURL = import.meta.env.VITE_ROOT_API
+const apiURL = "https://dataplatform-api.azurewebsites.net/";
 
 export default {
   components: {
