@@ -1,7 +1,6 @@
 <script>
 import axios from 'axios'
-const apiURL = "https://dataplatform-api.azurewebsites.net/";
-
+const apiURL = "https://dataplatform-api.azurewebsites.net/"; 
  
 
 export default {
@@ -88,6 +87,16 @@ export default {
                 Find Event
               </router-link>
             </li>
+            <li>
+              <router-link to="/services">
+                <span
+                  style="position: relative; top: 6px"
+                  class="material-icons"
+                  >edit</span
+                >
+                Manage Services
+              </router-link>
+            </li>            
           </ul>
         </nav>
       </header>
