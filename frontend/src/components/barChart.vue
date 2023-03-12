@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex justify-center">
-      <div class="w-1/2 ml-4">
+      <div class="w-full ml-4">
         <div class="shadow-lg rounded-lg overflow-hidden">
           <canvas class="p-10" ref="zipCodeChart"></canvas>
         </div>
