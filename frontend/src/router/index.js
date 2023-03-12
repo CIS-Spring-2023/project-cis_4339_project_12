@@ -24,45 +24,45 @@ const routes = [
   {
     path: '/intakeform',
     name: 'intakeform',
-    //meta: { requiresAuth: true },
+    
     component: IntakeForm
   },
   {
     path: '/findclient',
     name: 'findclient',
-    //meta: { requiresAuth: true },
+    
     component: FindClient
   },
   {
     path: '/updateclient/:id',
     name: 'updateclient',
-    //meta: { requiresAuth: true },
+    
     props: true,
     component: UpdateClient
   },
   {
     path: '/eventform',
     name: 'eventform',
-    //meta: { requiresAuth: true },
+    
     component: EventForm
   },
   {
     path: '/findevents',
     name: 'findevents',
-    //meta: { requiresAuth: true },
+    
     component: FindEvents
   },
   {
     path: '/eventdetails/:id',
     name: 'eventdetails',
-    //meta: { requiresAuth: true },
+    
     props: true,
     component: EventDetails
   },
   {
     path: '/services',
     name: 'services',
-    //meta: { requiresAuth: true },
+    
     props: true,
     component: Services
   }
