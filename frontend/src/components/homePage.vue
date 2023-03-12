@@ -27,52 +27,20 @@ export default {
         this.loading = true
         const response = await axios.get(`${apiURL}/events/attendance`)
 
-        await axios.get(`${apiURL}/clients`).then((res) => {
-          // simplified setting eventsAll
-          this.chartData = res.data.map(
-              (item) => `${item.address.zip}`
-          )
-          let newChartData = []
-          for(let i = 0; i < this.chartData.length; i++){
-            if(this.chartData[i].length > 0){ 
-              let entry = {zipCode: 0, count:1}
-              entry.zipCode = this.chartData[i]
-              newChartData.push(entry);
-            }
-          }
-        console.log(newChartData)
-
-        /**Consolidate start */
-        console.log("Length:"+newChartData.length)
-        for(let x = 0; x < newChartData.length; x++){
-          let item = newChartData[x];
-          for(let i = 0; i < newChartData.length; i++){
-            if( i != x && newChartData[i] != -1){
-              if (item.zipCode == newChartData[i].zipCode){
-                newChartData[x].count++;
-                newChartData[i] = -1;
-              }
-            }          
-          }
-        }
-
-        let newChartData2 = [];
-        for(let i = 0; i < newChartData.length; i++){
-          let item = newChartData[i];
-          if(item != -1){
-            newChartData2.push(item);
-          }
-        }
-          /*Consolidate end*/
-          console.log(newChartData2)
-          this.chartData = newChartData2;
-        })
+        var zipCodeData= [
+          { zipCode: '90210', count: 10 },
+          { zipCode: '90211', count: 20 },
+          { zipCode: '90212', count: 30 },
+          { zipCode: '90213', count: 15 },
+          { zipCode: '90214', count: 25 }
+          ];
+          this.chartData = zipCodeData;
+      
        
-        this.recentEvents = response.data
-        this.labels = response.data.map(
-          (item) => `${item.name} (${this.formattedDate(item.date)})`
-        )
-        //this.chartData = response.data.map((item) => item.attendees.length)
+      this.recentEvents = response.data
+      this.labels = response.data.map(
+        (item) => `${item.name} (${this.formattedDate(item.date)})`
+      )
 
       } catch (err) {
         if (err.response) {
