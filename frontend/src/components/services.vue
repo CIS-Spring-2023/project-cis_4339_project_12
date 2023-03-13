@@ -14,6 +14,9 @@ export default {
       activeServiceName:"Service",
       activeServiceStatus:false,
       displayedServiceStatus:"Disabled",
+      alertMessage:"",
+      errorMessage:false,
+      alertVisibility:false,
       services: [
         {id: 0, name: "Family Support", status: false},
         {id: 1, name: "Adult Education", status: false},
@@ -55,16 +58,45 @@ export default {
       this.activeServiceID = serviceID;
       this.activeServiceStatus=serviceStatus;
       this.displayedServiceStatus=this.statusFilter(serviceStatus);
-      //this.$router.push({ name: 'updateclient', params: { id: clientID } })
     },
     updateButton(){
-      this.$router.push({ name: 'updateService', params: { id: this.activeServiceID, name: this.activeServiceName, status: this.activeServiceStatus } });
+      //Below is the server request code that will be active in sprint 3
+      //this.$router.push({ name: 'updateService', params: { id: this.activeServiceID, name: this.activeServiceName, status: this.activeServiceStatus } });
+      if(this.activeServiceID != -1){
+        this.alertMessage = "Updating service ("+ this.activeServiceName+", Display Status: "+this.displayedServiceStatus+")";
+        this.alertVisibility = true;
+        this.errorMessage = false;
+      }else{
+        this.errorMessage = true;
+        this.alertVisibility = false;        
+        this.alertMessage = "Please select a service from the table.";
+      }
     },
     deleteButton(){
-      this.$router.push({ name: 'deleteService', params: { id: this.activeServiceID}});
+      //Below is the server request code that will be active in sprint 3
+      //this.$router.push({ name: 'deleteService', params: { id: this.activeServiceID}});
+      if(this.activeServiceID != -1){
+        this.alertMessage = "Deleting service ("+ this.activeServiceName+", Display Status: "+this.displayedServiceStatus+")";      
+        this.alertVisibility = true;
+        this.errorMessage = false;
+      }else{
+        this.errorMessage = true;
+        this.alertVisibility = false;
+        this.alertMessage = "Please select a service from the table.";
+      }
     },
     createButton(){
-      this.$router.push({ name: 'createService', params: { id: this.activeServiceID, name: this.activeServiceName, status: this.activeServiceStatus } });
+      //Below is the server request code that will be active in sprint 3
+      //this.$router.push({ name: 'createService', params: { id: this.activeServiceID, name: this.activeServiceName, status: this.activeServiceStatus } });
+      if(this.activeServiceID != -1){
+        this.alertMessage = "Creating service ("+ this.activeServiceName+", Display Status: "+this.displayedServiceStatus+")";
+        this.alertVisibility = true;
+        this.errorMessage = false;
+      }else{
+        this.errorMessage = true;
+        this.alertVisibility = false;
+        this.alertMessage = "Please select a service from the table.";
+      }
     },
   }
 }
@@ -162,8 +194,17 @@ export default {
                     Delete
                   </button>
                 </div>
-
             </div>
+            <!-- Alert message area to demonstrate button functionality-->
+            <!--Alert class divs are bootstrap sourced-->
+            <br>
+            <div class="alert alert-primary" v-if="alertVisibility" role="alert">
+              {{alertMessage}} 
+            </div>
+            <div class="alert alert-danger" v-if="errorMessage" role="alert">
+              {{alertMessage}}
+            </div>
+        
         </div>
         <div class="col-span-1"></div>
     </div>
