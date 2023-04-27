@@ -21,6 +21,7 @@ const routes = [
     name: 'login',
     component: LoginPage
   },
+
   {
     path: '/intakeform',
     name: 'intakeform',
