@@ -2,11 +2,13 @@
 import { DateTime } from 'luxon'
 import axios from 'axios'
 import AttendanceChart from './barChart.vue'
-const apiURL = "https://dataplatform-api.azurewebsites.net/";
+import AttendancePieChart from './pieChart.vue'
+const apiURL =  import.meta.env.VITE_ROOT_API;
 
 export default {
   components: {
-    AttendanceChart
+    AttendanceChart,
+    AttendancePieChart
   },
   data() {
     return {
@@ -122,7 +124,11 @@ export default {
               :label="labels"
               :chart-data="chartData"
             ></AttendanceChart>
-
+            <AttendancePieChart
+              v-if="!loading"
+              :label="labels"
+              :chart-data="chartData"
+            ></AttendancePieChart>
             <!-- Start of loading animation -->
             <div class="mt-40" v-if="loading">
               <p
