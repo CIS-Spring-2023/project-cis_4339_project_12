@@ -32,19 +32,6 @@
             https://getbootstrap.com/docs/5.0/forms/checks-radios/
             radio icon code taken from Bootstrap
           -->
-          <div class="form-check">
-            <input class="form-check-input" v-model="viewer" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-            <label class="form-check-label" for="flexRadioDefault1">
-              Viewer
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" v-model="editor" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-            <label class="form-check-label" for="flexRadioDefault2">
-              Editor
-            </label>
-          </div>
-
 
         </div>
         <br>
