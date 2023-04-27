@@ -1,44 +1,52 @@
-<template>
-  <div>
-    <div class="flex justify-center">
-      <div class="w-full ml-4">
-        <div class="shadow-lg rounded-lg overflow-hidden">
-          <canvas class="p-10" ref="zipCodeChart"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
- 
 
 <script>
 import { Chart, registerables } from 'chart.js'
 Chart.register(...registerables)
-
- 
-
 export default {
   props: {
+    label: {
+      type: Array
+    },
     chartData: {
       type: Array
     }
   },
   async mounted() {
-    await new Chart(this.$refs.zipCodeChart, {
-      type: 'doughnut',
+    const backgroundColor = this.chartData.map(() => this.getColor())
+    const borderColor = backgroundColor.map((e) =>
+      e.replace(/[\d\.]+\)$/g, '1)')
+    )
+    await new Chart(this.$refs.attendanceChart, {
+      type: 'bar',
       data: {
-        labels: this.chartData.map(item => item.zipCode),
+        labels: this.label,
         datasets: [
           {
             borderWidth: 1,
-            backgroundColor: ['#007bff', '#dc3545', '#ffc107', '#28a745', '#6c757d'],
-            borderColor: '#fff',
-            data: this.chartData.map(item => item.count)
+            backgroundColor: backgroundColor,
+            borderColor: borderColor,
+            data: this.chartData
           }
         ]
       },
       options: {
+        scales: {
+          y: {
+            ticks: {
+              stepSize: 1
+            }
+          },
+          x: {
+            gridLines: {
+              display: false
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
         responsive: true,
         maintainAspectRatio: true
       }
@@ -52,3 +60,8 @@ export default {
   }
 }
 </script>
+<template>
+  <div class="shadow-lg rounded-lg overflow-hidden">
+    <canvas class="p-10" ref="attendanceChart"></canvas>
+  </div>
+</template>
