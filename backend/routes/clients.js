@@ -1,6 +1,5 @@
 const express = require('express')
 const router = express.Router()
-
 const org = process.env.ORG
 
 // importing data model schemas
@@ -9,7 +8,7 @@ const { clients } = require('../models/models')
 // GET 10 most recent clients for org
 router.get('/', (req, res, next) => {
   clients
-    .find({ orgs: org }, (error, data) => {
+    .find((error, data) => {
       if (error) {
         return next(error)
       } else {
@@ -52,7 +51,7 @@ router.get('/search', (req, res, next) => {
     default:
       return res.status(400).send('invalid searchBy')
   }
-  clients.find(dbQuery, (error, data) => {
+  clients.find(dbQuery, { orgs: org }, (error, data) => {
     if (error) {
       return next(error)
     } else {
@@ -95,6 +94,7 @@ router.post('/', (req, res, next) => {
 
 // PUT update client
 router.put('/update/:id', (req, res, next) => {
+
   clients.findByIdAndUpdate(req.params.id, req.body, (error, data) => {
     if (error) {
       return next(error)
