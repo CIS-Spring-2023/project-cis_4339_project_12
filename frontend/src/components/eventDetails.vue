@@ -4,18 +4,18 @@ import { required } from '@vuelidate/validators'
 import axios from 'axios'
 import { DateTime } from 'luxon'
 const apiURL = import.meta.env.VITE_ROOT_API
+import { useLoggedInUserStore } from "@/store/loggedInUser";
 
 export default {
   props: ['id'],
   setup() {
-    return { v$: useVuelidate({ $autoDirty: true }) }
+    const user = useLoggedInUserStore();
+    return { v$: useVuelidate({ $autoDirty: true }), user }
   },
   data() {
     return {
       clientAttendees: [],
-      AvailableServices: {
-        services: ['Family Support', 'Adult Education', 'Youth Services Program', 'Early Childhood Education', 'Health Care']
-      },
+      AvailableServices: [],
       event: {
         name: '',
         services: [],
@@ -33,12 +33,22 @@ export default {
     }
   },
   created() {
+    //Fetch the event with this ID
     axios.get(`${apiURL}/events/id/${this.$route.params.id}`).then((res) => {
       this.event = res.data
       this.event.date = this.formattedDate(this.event.date)
       this.event.attendees.forEach((e) => {
         axios.get(`${apiURL}/clients/id/${e}`).then((res) => {
           this.clientAttendees.push(res.data)
+        })
+      })
+    })
+    //fetch services that are set to active
+    axios.get(`${apiURL}/services/search?val=true&searchBy=status`).then((res) => {
+      this.services = res.data
+      this.services.forEach((e) => {
+        axios.get(`${apiURL}/services/id/${e._id}`).then((res) => {
+          this.AvailableServices.push(res.data)
         })
       })
     })
@@ -54,15 +64,21 @@ export default {
         .toISODate()
     },
     handleEventUpdate() {
+      //update the event using the the stored ID and event variabels
+      this.alertMessage = "Event updated";
       axios.put(`${apiURL}/events/update/${this.id}`, this.event).then(() => {
         alert('Update has been saved.')
         this.$router.back()
       })
     },
     editClient(clientID) {
+      //push edits that are specified in the arguments
+      this.alertMessage = "Client updated";
       this.$router.push({ name: 'updateclient', params: { id: clientID } })
     },
     eventDelete() {
+      this.alertMessage = "Event deleted";
+      //delete the event associated with this ID
       axios.delete(`${apiURL}/events/${this.id}`).then(() => {
         alert('Event has been deleted.')
         this.$router.push({ name: 'findevents' })
@@ -83,34 +99,24 @@ export default {
 <template>
   <main>
     <div>
-      <h1
-        class="font-bold text-4xl text-red-700 tracking-widest text-center mt-10"
-      >
+      <h1 class="font-bold text-4xl text-red-700 tracking-widest text-center mt-10">
         Update Event
       </h1>
     </div>
     <div class="px-10 py-20">
       <form @submit.prevent="handleSubmitForm">
-        <div
-          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"
-        >
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
           <h2 class="text-2xl font-bold">Event Details</h2>
           <!-- form field -->
           <div class="flex flex-col">
             <label class="block">
               <span class="text-gray-700">Event Name</span>
               <span style="color: #ff0000">*</span>
-              <input
-                type="text"
+              <input type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                v-model="event.name"
-              />
+                v-model="event.name" />
               <span class="text-black" v-if="v$.event.name.$error">
-                <p
-                  class="text-red-700"
-                  v-for="error of v$.event.name.$errors"
-                  :key="error.$uid"
-                >
+                <p class="text-red-700" v-for="error of v$.event.name.$errors" :key="error.$uid">
                   {{ error.$message }}!
                 </p>
               </span>
@@ -122,17 +128,11 @@ export default {
             <label class="block">
               <span class="text-gray-700">Date</span>
               <span style="color: #ff0000">*</span>
-              <input
-                type="date"
+              <input type="date"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                v-model="event.date"
-              />
+                v-model="event.date" />
               <span class="text-black" v-if="v$.event.date.$error">
-                <p
-                  class="text-red-700"
-                  v-for="error of v$.event.date.$errors"
-                  :key="error.$uid"
-                >
+                <p class="text-red-700" v-for="error of v$.event.date.$errors" :key="error.$uid">
                   {{ error.$message }}!
                 </p>
               </span>
@@ -148,9 +148,7 @@ export default {
               <!-- added missing v-model connection -->
               <textarea
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                rows="2"
-                v-model="event.description"
-              ></textarea>
+                rows="2" v-model="event.description"></textarea>
             </label>
           </div>
 
@@ -159,62 +157,47 @@ export default {
           <div></div>
           <!-- form field -->
           <div class="flex flex-col grid-cols-3">
-            <label>Services Offered at Event</label>
-            <div v-for="service in AvailableServices.services">
+            <label>Available Services</label>
+            <div v-for="service in AvailableServices">
               <label :for="service" class="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  :id="service.replaceAll(' ','')"
-                  :value="service"
+                <input type="checkbox" :id="service.name.replaceAll(' ', '')" :value="service.name"
                   v-model="event.services"
                   class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
-                  notchecked
-                />
-                <span class="ml-2">{{ service }}</span>
+                  notchecked />
+                <span class="ml-2">{{ service.name }}</span>
               </label>
             </div>
           </div>
         </div>
 
         <!-- grid container -->
-        <div
-          class="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"
-        >
+        <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
           <h2 class="text-2xl font-bold">Address</h2>
           <!-- form field -->
           <div class="flex flex-col">
             <label class="block">
               <span class="text-gray-700">Address Line 1</span>
-              <input
-                type="text"
+              <input type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                placeholder
-                v-model="event.address.line1"
-              />
+                placeholder v-model="event.address.line1" />
             </label>
           </div>
           <!-- form field -->
           <div class="flex flex-col">
             <label class="block">
               <span class="text-gray-700">Address Line 2</span>
-              <input
-                type="text"
+              <input type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                placeholder
-                v-model="event.address.line2"
-              />
+                placeholder v-model="event.address.line2" />
             </label>
           </div>
           <!-- form field -->
           <div class="flex flex-col">
             <label class="block">
               <span class="text-gray-700">City</span>
-              <input
-                type="text"
+              <input type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                placeholder
-                v-model="event.address.city"
-              />
+                placeholder v-model="event.address.city" />
             </label>
           </div>
           <div></div>
@@ -222,56 +205,36 @@ export default {
           <div class="flex flex-col">
             <label class="block">
               <span class="text-gray-700">County</span>
-              <input
-                type="text"
+              <input type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                placeholder
-                v-model="event.address.county"
-              />
+                placeholder v-model="event.address.county" />
             </label>
           </div>
           <!-- form field -->
           <div class="flex flex-col">
             <label class="block">
               <span class="text-gray-700">Zip Code</span>
-              <input
-                type="text"
+              <input type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                placeholder
-                v-model="event.address.zip"
-              />
+                placeholder v-model="event.address.zip" />
             </label>
           </div>
         </div>
 
         <!-- grid container -->
-        <div
-          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"
-        >
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10" v-if="user.isEditor">
           <div class="flex justify-between mt-10 mr-20">
-            <button
-              @click="handleEventUpdate"
-              type="submit"
-              class="bg-green-700 text-white rounded"
-            >
+            <button @click="handleEventUpdate" type="submit" class="bg-green-700 text-white rounded">
               Update Event
             </button>
           </div>
           <div class="flex justify-between mt-10 mr-20">
-            <button
-              @click="eventDelete"
-              type="submit"
-              class="bg-red-700 text-white rounded"
-            >
+            <button @click="eventDelete" type="submit" class="bg-red-700 text-white rounded">
               Delete Event
             </button>
           </div>
           <div class="flex justify-between mt-10 mr-20">
-            <button
-              type="reset"
-              class="border border-red-700 bg-white text-red-700 rounded"
-              @click="$router.back()"
-            >
+            <button type="reset" class="border border-red-700 bg-white text-red-700 rounded" @click="$router.back()">
               Go back
             </button>
           </div>
@@ -279,10 +242,7 @@ export default {
 
         <hr class="mt-10 mb-10" />
 
-        <!-- grid container -->
-        <div
-          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"
-        >
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
           <div>
             <h2 class="text-2xl font-bold">List of Attendees</h2>
             <h3 class="italic">Click table row to edit/display an entry</h3>
@@ -297,11 +257,7 @@ export default {
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-300">
-                <tr
-                  @click="editClient(client._id)"
-                  v-for="client in clientAttendees"
-                  :key="client._id"
-                >
+                <tr @click="editClient(client._id)" v-for="client in clientAttendees" :key="client._id">
                   <td class="p-2 text-left">
                     {{ client.firstName + ' ' + client.lastName }}
                   </td>
