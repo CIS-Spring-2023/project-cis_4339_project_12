@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import axios from 'axios'
+const apiURL = import.meta.env.VITE_ROOT_API
 
 //defining a store
 export const useLoggedInUserStore = defineStore({
@@ -7,21 +9,26 @@ export const useLoggedInUserStore = defineStore({
   //central part of the store
   state: () => {
     return {
-      name: "",
+      name: "user",
       isLoggedIn: false,
+      isEditor: false
     }
   },
   // equivalent to methods in components, perfect to define business logic
   actions: {
-    async login(username, password) {
+    //login action, takes a user name an password as arguments
+    async login(uName, pWord) {
       try {
-        const response = await apiLogin(username, password);
+        //await a response using the apiLogin function
+        const response = await apiLogin(uName, pWord);
+        //patch the values when promises get resolved
         this.$patch({
-          isLoggedIn: response.isAllowed,
-          name: response.name,
+          name: response[0],
+          isLoggedIn: response[1],
+          isEditor: response[2]
         })
         this.$router.push("/");
-      } catch(error) {
+      } catch (error) {
         console.log(error)
       }
     },
@@ -30,16 +37,28 @@ export const useLoggedInUserStore = defineStore({
         name: "",
         isLoggedIn: false
       });
-
-      // we could do other stuff like redirecting the user
     }
   }
 });
 
-//simulate a login - we will later use our backend to handle authentication
-function apiLogin(u, p) {
-  if (u === "ed" && p === "ed") return Promise.resolve({ isAllowed: true, name: "John Doe" });
-  if (p === "ed") return Promise.resolve({ isAllowed: false });
+//take a username and password as Strings
+//make a post request with both as variables
+async function apiLogin(u, p) {
+  const response = await axios.post(`${apiURL}/login`, {
+    uName: u,
+    pWord: p
+  })
+    .then(
+      function (response) {
+        return response;
+      })
+    .catch(function (error) {
+      console.log(error)
+      return false
+    })
+  //if the backend validates the credentials then return credential data set.
+  if (response.data.isValidated == true) {
+    return [response.data.username, response.data.isValidated, response.data.isEditor];
+  }
   return Promise.reject(new Error("invalid credentials"));
-} 
-
+}
