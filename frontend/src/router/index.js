@@ -68,20 +68,20 @@ const routes = [
     component: Services
   }
 ]
- 
+
 const router = createRouter({
   history: createWebHistory(),
   routes
 })
- 
+
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   const isAuthenticated = localStorage.getItem('user') // check if the user is authenticated
-  if (requiresAuth && !isAuthenticated) {
+  if (requiresAuth && isAuthenticated) {
     next('/login')
   } else {
     next()
   }
 })
- 
+
 export default router
