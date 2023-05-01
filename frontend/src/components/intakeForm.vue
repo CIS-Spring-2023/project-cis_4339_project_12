@@ -102,35 +102,25 @@ export default {
 </script>
 <template>
   <main>
-    <h1
-      class="font-bold text-4xl text-red-700 tracking-widest text-center mt-10"
-    >
+    <h1 class="font-bold text-4xl text-red-700 tracking-widest text-center mt-10">
       Client Intake Form
     </h1>
     <div class="px-10 py-20">
       <!-- @submit.prevent stops the submit event from reloading the page-->
       <form @submit.prevent="registerClient">
         <!-- grid container -->
-        <div
-          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"
-        >
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
           <h2 class="text-2xl font-bold">Personal Details</h2>
           <!-- form field -->
           <div class="flex flex-col">
             <label class="block">
               <span class="text-gray-700">First Name</span>
               <span style="color: #ff0000">*</span>
-              <input
-                type="text"
+              <input type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                v-model="client.firstName"
-              />
+                v-model="client.firstName" />
               <span class="text-black" v-if="v$.client.firstName.$error">
-                <p
-                  class="text-red-700"
-                  v-for="error of v$.client.firstName.$errors"
-                  :key="error.$uid"
-                >
+                <p class="text-red-700" v-for="error of v$.client.firstName.$errors" :key="error.$uid">
                   {{ error.$message }}!
                 </p>
               </span>
@@ -141,12 +131,9 @@ export default {
           <div class="flex flex-col">
             <label class="block">
               <span class="text-gray-700">Middle Name</span>
-              <input
-                type="text"
+              <input type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                placeholder
-                v-model="client.middleName"
-              />
+                placeholder v-model="client.middleName" />
             </label>
           </div>
 
@@ -155,18 +142,11 @@ export default {
             <label class="block">
               <span class="text-gray-700">Last Name</span>
               <span style="color: #ff0000">*</span>
-              <input
-                type="text"
+              <input type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                placeholder
-                v-model="client.lastName"
-              />
+                placeholder v-model="client.lastName" />
               <span class="text-black" v-if="v$.client.lastName.$error">
-                <p
-                  class="text-red-700"
-                  v-for="error of v$.client.lastName.$errors"
-                  :key="error.$uid"
-                >
+                <p class="text-red-700" v-for="error of v$.client.lastName.$errors" :key="error.$uid">
                   {{ error.$message }}!
                 </p>
               </span>
@@ -178,18 +158,11 @@ export default {
           <div class="flex flex-col">
             <label class="block">
               <span class="text-gray-700">Email</span>
-              <input
-                type="email"
+              <input type="email"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                v-model="client.email"
-              />
+                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" v-model="client.email" />
               <span class="text-black" v-if="v$.client.email.$error">
-                <p
-                  class="text-red-700"
-                  v-for="error of v$.client.email.$errors"
-                  :key="error.$uid"
-                >
+                <p class="text-red-700" v-for="error of v$.client.email.$errors" :key="error.$uid">
                   {{ error.$message }}!
                 </p>
               </span>
@@ -200,21 +173,11 @@ export default {
             <label class="block">
               <span class="text-gray-700">Phone Number</span>
               <span style="color: #ff0000">*</span>
-              <input
-                type="text"
+              <input type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-                v-model="client.phoneNumber.primary"
-              />
-              <span
-                class="text-black"
-                v-if="v$.client.phoneNumber.primary.$error"
-              >
-                <p
-                  class="text-red-700"
-                  v-for="error of v$.client.phoneNumber.primary.$errors"
-                  :key="error.$uid"
-                >
+                pattern="[0-9]{3}[0-9]{3}[0-9]{4}" v-model="client.phoneNumber.primary" />
+              <span class="text-black" v-if="v$.client.phoneNumber.primary.$error">
+                <p class="text-red-700" v-for="error of v$.client.phoneNumber.primary.$errors" :key="error.$uid">
                   {{ error.$message }}!
                 </p>
               </span>
@@ -224,41 +187,32 @@ export default {
           <div class="flex flex-col">
             <label class="block">
               <span class="text-gray-700">Alternative Phone Number</span>
-              <input
-                type="text"
+              <input type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-                v-model="client.phoneNumber.alternate"
-              />
+                pattern="[0-9]{3}[0-9]{3}[0-9]{4}" v-model="client.phoneNumber.alternate" />
             </label>
           </div>
         </div>
 
         <!-- grid container -->
-        <div
-          class="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"
-        >
+        <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
           <h2 class="text-2xl font-bold">Address Details</h2>
           <!-- form field -->
           <div class="flex flex-col">
             <label class="block">
               <span class="text-gray-700">Address Line 1</span>
-              <input
-                type="text"
+              <input type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                v-model="client.address.line1"
-              />
+                v-model="client.address.line1" />
             </label>
           </div>
           <!-- form field -->
           <div class="flex flex-col">
             <label class="block">
               <span class="text-gray-700">Address Line 2</span>
-              <input
-                type="text"
+              <input type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                v-model="client.address.line2"
-              />
+                v-model="client.address.line2" />
             </label>
           </div>
           <!-- form field -->
@@ -266,17 +220,11 @@ export default {
             <label class="block">
               <span class="text-gray-700">City</span>
               <span style="color: #ff0000">*</span>
-              <input
-                type="text"
+              <input type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                v-model="client.address.city"
-              />
+                v-model="client.address.city" />
               <span class="text-black" v-if="v$.client.address.city.$error">
-                <p
-                  class="text-red-700"
-                  v-for="error of v$.client.address.$errors"
-                  :key="error.$uid"
-                >
+                <p class="text-red-700" v-for="error of v$.client.address.$errors" :key="error.$uid">
                   {{ error.$message }}!
                 </p>
               </span>
@@ -287,22 +235,18 @@ export default {
           <div class="flex flex-col">
             <label class="block">
               <span class="text-gray-700">County</span>
-              <input
-                type="text"
+              <input type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                v-model="client.address.county"
-              />
+                v-model="client.address.county" />
             </label>
           </div>
           <!-- form field -->
           <div class="flex flex-col">
             <label class="block">
               <span class="text-gray-700">Zip Code</span>
-              <input
-                type="text"
+              <input type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                v-model="client.address.zip"
-              />
+                v-model="client.address.zip" />
             </label>
           </div>
           <div></div>
