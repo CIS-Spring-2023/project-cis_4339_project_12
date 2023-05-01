@@ -16,7 +16,7 @@
 import { Chart, registerables } from 'chart.js'
 Chart.register(...registerables)
 
- 
+
 
 export default {
   props: {
@@ -28,6 +28,7 @@ export default {
     await new Chart(this.$refs.zipCodeChart, {
       type: 'doughnut',
       data: {
+        //extract zipcode data for the chart
         labels: this.chartData.map(item => item.zipCode),
         datasets: [
           {
