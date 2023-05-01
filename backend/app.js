@@ -16,6 +16,7 @@ app.use(
   })
 )
 
+
 // sets up mongoose for the mongoDB connection
 mongoose
   .connect(process.env.MONGO_URL)
@@ -37,6 +38,8 @@ app.use(morgan('dev'))
 app.use('/clients', require('./routes/clients'))
 app.use('/events', require('./routes/events'))
 app.use('/org', require('./routes/org'))
+app.use('/login', require('./routes/logins'))
+app.use('/services', require('./routes/services'))
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`)
