@@ -1,7 +1,8 @@
 <script>
 import axios from 'axios'
-const apiURL = "https://dataplatform-api.azurewebsites.net/"; 
+const apiURL = import.meta.env.VITE_ROOT_API
  
+import { useLoggedInUserStore } from "@/store/loggedInUser";
 
 export default {
   name: 'App',
@@ -12,10 +13,14 @@ export default {
   },
   created() {
     axios.get(`${apiURL}/org`).then((res) => {
-      this.orgName = res.data.name
+      this.orgName = res.data.namez
     })
+  },
+  setup() {
+    const user = useLoggedInUserStore();
+    return { user };
   }
-}
+};
 </script>
 <template>
   <main class="flex flex-row">
@@ -26,7 +31,7 @@ export default {
         </section>
         <nav class="mt-10">
           <ul class="flex flex-col gap-4">
-            <li>
+            <li  v-if="!user.isLoggedIn">
               <router-link to="/login">
                 <span
                   style="position: relative; top: 6px"
@@ -36,8 +41,20 @@ export default {
                 Login
               </router-link>
             </li>
-
-            <li>
+            <li  v-if="user.isLoggedIn">
+                  <a href="/">
+                    <span @click="store.logout()" class="nav-link"><i class="bi bi-person-fill" style="font-size: 1rem; color: hsla(160, 100%, 37%, 1)"></i> Welcome, {{ user.name }}</span>
+                  </a>
+            </li>           
+            <li v-if="user.isLoggedIn">
+              <a href="/">                      
+                <span style="position: relative; top: 6px" @click="store.logout()" class="material-icons">
+                  <i class="bi bi-box-arrow-left" ></i>
+                </span>
+                Logout
+              </a>
+            </li> 
+            <li>            
               <router-link to="/">
                 <span
                   style="position: relative; top: 6px"
@@ -47,7 +64,8 @@ export default {
                 Dashboard
               </router-link>
             </li>
-            <li>
+
+            <li v-if="user.isLoggedIn && user.isEditor">
               <router-link to="/intakeform">
                 <span
                   style="position: relative; top: 6px"
@@ -57,7 +75,7 @@ export default {
                 Client Intake Form
               </router-link>
             </li>
-            <li>
+            <li v-if="user.isLoggedIn && user.isEditor">
               <router-link to="/eventform">
                 <span
                   style="position: relative; top: 6px"
@@ -66,8 +84,8 @@ export default {
                 >
                 Create Event
               </router-link>
-            </li>
-            <li>
+            </li>        
+            <li v-if="user.isLoggedIn">
               <router-link to="/findclient">
                 <span
                   style="position: relative; top: 6px"
@@ -77,7 +95,7 @@ export default {
                 Find Client
               </router-link>
             </li>
-            <li>
+            <li v-if="user.isLoggedIn">
               <router-link to="/findevents">
                 <span
                   style="position: relative; top: 6px"
@@ -87,7 +105,7 @@ export default {
                 Find Event
               </router-link>
             </li>
-            <li>
+            <li v-if="user.isLoggedIn && user.isEditor">
               <router-link to="/services">
                 <span
                   style="position: relative; top: 6px"
