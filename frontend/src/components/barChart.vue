@@ -57,7 +57,7 @@ export default {
       let channel = () => Math.random() * 255
       return `rgba(${channel()}, ${channel()}, ${channel()}, 0.2)`
     }
-  }
+  },
 }
 </script>
 <template>
